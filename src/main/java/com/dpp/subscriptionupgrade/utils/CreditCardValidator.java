@@ -1,30 +1,35 @@
 package com.dpp.subscriptionupgrade.utils;
 
+import com.dpp.subscriptionupgrade.exception.BadRequestException;
+import com.dpp.subscriptionupgrade.model.request.UpgradeUserSubscriptionRequestModel;
+
 import java.time.YearMonth;
 
 public class CreditCardValidator {
 
-    private static boolean validateExpirationDate(String expiryDate) {
+    private static void validateExpirationDate(String expiryDate) {
         try {
             String[] parts = expiryDate.split("/");
             if (parts.length != 2) {
-                return false;
+                throw new BadRequestException("Please enter Valid expiry Date");
             }
             int month = Integer.parseInt(parts[0]);
             int year = 2000 + Integer.parseInt(parts[1]);
             if (month < 1 || month > 12) {
-                return false;
+                throw new BadRequestException("Please enter Valid expiry Date");
             }
 
             YearMonth currentYearMonth = YearMonth.now();
             YearMonth cardYearMonth = YearMonth.of(year, month);
-            return !cardYearMonth.isBefore(currentYearMonth);
+            if (!cardYearMonth.isBefore(currentYearMonth)) {
+                throw new BadRequestException("Please enter Valid expiry Date");
+            }
         } catch (NumberFormatException e) {
-            return false;
+            throw new BadRequestException("Please enter Valid expiry Date");
         }
     }
 
-    private static boolean validateCardNumber(String cardNumber) {
+    private static void validateCardNumber(String cardNumber) {
         int total = 0;
         boolean doubleDigit = false;
         for (int i = cardNumber.length() - 1; i >= 0; i--) {
@@ -38,38 +43,40 @@ public class CreditCardValidator {
             total += digit;
             doubleDigit = !doubleDigit;
         }
-
-        return total % 10 == 0;
-    }
-
-    private static boolean validateCVV(String cvv) {
-        if (cvv == null || cvv.isEmpty()) {
-            return false;
+        if (total % 10 != 0) {
+            throw new BadRequestException("Please enter Valid Card Number");
         }
-        return cvv.matches("\\d{3}");
     }
 
-    private static boolean isValidName(String name) {
+    private static void validateCVV(String cvv) {
+        if (cvv == null || cvv.isEmpty()) {
+            throw new BadRequestException("Please enter Valid CVV");
+        }
+        if (!cvv.matches("\\d{3}")) {
+            throw new BadRequestException("Please enter Valid CVV");
+        }
+    }
+
+    private static void isValidName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            return false;
+            throw new BadRequestException("Please enter Valid Name");
         }
 
         String regex = "^[a-zA-Z]+([ '-][a-zA-Z]+)*$";
         if (!name.matches(regex)) {
-            return false;
+            throw new BadRequestException("Please enter Valid Name");
         }
-
         String[] words = name.trim().split("\\s+");
-        return words.length >= 2;
+        if (!(words.length >= 2)) {
+            throw new BadRequestException("Please enter Valid Name");
+        }
     }
-
 
     // Master method to validate all components
-    public static boolean validateCreditCardDetails(String cardNumber, String expiryDate, String cvv, String cardHolderName) {
-        return validateCardNumber(cardNumber) &&
-                validateExpirationDate(expiryDate) &&
-                validateCVV(cvv) &&
-                isValidName(cardHolderName);
+    public static void validateCreditCardDetails(UpgradeUserSubscriptionRequestModel requestModel) {
+        isValidName(requestModel.getName());
+        validateCardNumber(requestModel.getCardNumber());
+        validateExpirationDate(requestModel.getExpiryDate());
+        validateCVV(requestModel.getCvv());
     }
-
 }

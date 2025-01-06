@@ -1,5 +1,6 @@
 package com.dpp.subscriptionupgrade.model.request;
 
+
 import lombok.*;
 
 @Data
@@ -8,7 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PaymentRequestModel {
+public class UpgradeUserSubscriptionRequestModel {
+    private Long subscriptionID;
+    private Long userID;
     private String name;
     private String cardNumber;
     private String cvv;

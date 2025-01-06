@@ -19,20 +19,21 @@ public class UserSubscriptions {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long ID;
+
     @Column
     private Long subscriptionID;
+
     @Column
     private Long userID;
+
     @Column
-    private Long transactionID;
+    private String transactionID;
+
     @Column
     private Timestamp createdTs;
+
     @Column
     private Timestamp expirationTs;
 
-    //Mysql logic to add Subscription
-    public void addUserSubscription() {
-
-    }
 }
