@@ -1,6 +1,5 @@
 package com.dpp.subscriptionupgrade.controller;
 
-import com.dpp.subscriptionupgrade.model.JsonResponse;
 import com.dpp.subscriptionupgrade.model.request.UpgradeUserSubscriptionRequestModel;
 import com.dpp.subscriptionupgrade.model.response.PaymentSuccessFailureResponse;
 import com.dpp.subscriptionupgrade.service.UpgradeUserSubscriptionService;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/upgrade-user-subscription")
-
 public class UpgradeUserSubscriptionController {
 
     @Autowired
@@ -19,10 +17,10 @@ public class UpgradeUserSubscriptionController {
 
 
     @PostMapping
-    public ResponseEntity<PaymentSuccessFailureResponse> saveAsset(@RequestHeader(value = "Authorization", required = false) String token,
-                                                  @RequestBody UpgradeUserSubscriptionRequestModel requestModel) {
-        return new ResponseEntity<PaymentSuccessFailureResponse>(upgradeUserSubscriptionService.upgradeUserSubscription(token, requestModel), HttpStatus.CREATED);
+    public ResponseEntity<PaymentSuccessFailureResponse> saveAsset(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestBody UpgradeUserSubscriptionRequestModel requestModel) {
+        return new ResponseEntity<PaymentSuccessFailureResponse>(
+                upgradeUserSubscriptionService.upgradeUserSubscription(token, requestModel), HttpStatus.CREATED);
     }
-
-
 }

@@ -23,8 +23,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
 
+    @Column(nullable = false)
+    private Long activeSubscription;
+
     @Column(nullable = false, updatable = false)
     private String userName;
+
 
     @Column
     private Timestamp createdTs;
